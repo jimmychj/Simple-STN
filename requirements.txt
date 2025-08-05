@@ -1,0 +1,7 @@
+neuron
+numpy
+matplotlib
+efel
+scipy
+sbi
+seaborn
