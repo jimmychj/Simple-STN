@@ -452,7 +452,6 @@ def run_cost_simulation(f_index, plotting=False):
     score_ir = 0
     if math.isnan(score_ir):
         score_ir = 100
-    print('input resistence = {}'.format(z_value))
 
     stn_cell = create_updated_cell(f)
     soma_v = h.Vector().record(stn_cell.soma(0.5)._ref_v)
@@ -548,7 +547,6 @@ def run_cost_simulation(f_index, plotting=False):
     soma_t.clear()
     freq_fi1 = get_freq_detect_burst(v_1, dt)
     score_fi1 = cal_score(freq_fi1, [65, 75], 75, 'FI1')
-    # score_fi1 = cal_score(freq_fi1, [50, 90], 75, 'FI1')
     if math.isnan(score_fi1):
         score_fi1 = 50
 
@@ -649,21 +647,28 @@ def run_cost_simulation(f_index, plotting=False):
     t_check = soma_t.to_python()
     soma_v.clear()
     soma_t.clear()
-    peaks = find_peaks(v_check[int(1000 / dt):int(1500 / dt)], height=0)
-    peak_times = (peaks[0] + int(1000 / dt)) * dt
-    last_two_peaks_time = peak_times[-2:]
-
+    # Use dv/dt peak-to-peak to define ISI and PRC phase
+    dvdt = np.diff(v_check) / dt
+    start_idx = int(1200 / dt)
+    end_idx = int(1500 / dt) - 1  # dv/dt is one sample shorter than v_check
+    dvdt_window = dvdt[start_idx:end_idx]
+    dvdt_peaks = find_peaks(dvdt_window, height=100)
+    dvdt_peak_indices = dvdt_peaks[0] + start_idx
+    peak_times = (dvdt_peak_indices + 1) * dt
+    first_three_peaks_time = peak_times[:3]
+    baseline_isi = first_three_peaks_time[2]/dt - first_three_peaks_time[1]/dt
+    v_normal_list = v_check.copy()
     if len(peak_times) > 2 and len(peak_times) < 12:
         # Add IClamps for PRC
         v_shifts = []
         iprcs = []
-        i_start = last_two_peaks_time[-2]
-        i_end = last_two_peaks_time[-1]
+        i_start = first_three_peaks_time[1]
+        i_end = first_three_peaks_time[2]
         i_max = 0.1
-        i_step = 0.05 * (i_end - i_start)  # 5% interval
-        x_ticks = np.arange(0.05, 0.8, 0.05)
-        i_values = [i_start + i * i_step for i in range(int((i_end - i_start) / i_step) + 1)]
-        for i_time in i_values[1:16]:
+        i_step = 0.02 * (i_end - i_start)  # 5% interval
+        x_ticks = np.arange(0.06, 0.9, 0.02)  #(0, 1.02, 0.02)
+        i_values = [i_start + i * i_step for i in range(len(x_ticks))]
+        for i_time in i_values:
             stn_cell = create_updated_cell(f)
             stim = h.IClamp(stn_cell.dend1(0.5))
             stim.delay = 0
@@ -674,9 +679,16 @@ def run_cost_simulation(f_index, plotting=False):
             time_points = np.arange(0, t_max + dt, dt)
             peak_current = i_max  # Peak current in nA
             current_values = np.zeros_like(time_points)  # Initialize to 0
-            current_values[time_points >= start_time] = peak_current * np.exp(
-                -(time_points[time_points >= start_time] - start_time) / 2.5
+            tau_rise = 0.5  # ms
+            tau_decay = 2.0  # ms
+            mask = time_points >= start_time
+            t_rel = time_points[mask] - start_time
+            current_values[mask] = (
+                peak_current
+                * (1 - np.exp(-t_rel / tau_rise))
+                * np.exp(-t_rel / tau_decay)
             )
+            
             # Create vectors for time and current
             tvec = h.Vector(time_points.tolist())
             ivec = h.Vector(current_values.tolist())
@@ -684,7 +696,7 @@ def run_cost_simulation(f_index, plotting=False):
             soma_v = h.Vector().record(stn_cell.soma(0.5)._ref_v)
             soma_t = h.Vector().record(h._ref_t)
             h.finitialize()
-            h.continuerun(1500 * ms)
+            h.continuerun(1510 * ms)
             v_check = soma_v.to_python()
             t_check = soma_t.to_python()
             soma_v.clear()
@@ -701,40 +713,41 @@ def run_cost_simulation(f_index, plotting=False):
             # plt.xlabel('Time (ms)')
             # plt.ylabel('Potential (mV)')
             # plt.xlim([start_time-8, start_time+16])
-            # plt.ylim([-65, -55])
+            # # plt.ylim([-65, -55])
             # # plt.savefig('sim_results/Simulated_vshift.svg')
             # plt.figure()
             # plt.plot(t_check, v_check)
             # plt.xlabel('Time (ms)')
             # plt.ylabel('Potential (mV)')
             # plt.xlim([1000, 1500])
-            # # plt.savefig('sim_results/Phase_shift_ISI.svg')
-            # # plt.show()
+            # plt.savefig('sim_results/Phase_shift_ISI.svg')
+            # plt.show()
 
-            # Find peaks in the voltage trace
-            peaks = find_peaks(v_check[int(1000 / dt):int(1480 / dt)], height=-20)
-            peak_indices = peaks[0] + int(1480 / dt)  # offset peak indices to match full v_check indexing
-            # Compute inter-spike intervals (in number of samples)
-            diff_p = np.diff(peak_indices)
+            # Find dv/dt peaks within the analysis window for perturbed ISIs
+            dvdt = np.diff(v_check) / dt
+            p_start_idx = int(1200 / dt)
+            p_end_idx = int(1510 / dt) - 1  # dv/dt is one sample shorter
+            dvdt_window = dvdt[p_start_idx:p_end_idx]
+            dvdt_peaks = find_peaks(dvdt_window, height=100)
+            dvdt_peak_indices = dvdt_peaks[0] + p_start_idx
+            # print(f"dvdt_peak_indices: {dvdt_peak_indices}", f"p_start_idx: {p_start_idx}, p_end_idx: {p_end_idx}")
+            diff_p = np.diff(dvdt_peak_indices)
             # EPSP voltage at the perturbed time
             try:
-                v_epsp = v_check[int((start_time + 6) / dt)]
+                time_idx = int((start_time + 6) / dt)
+                v_epsp = v_check[time_idx]
                 # Compute average "normal" voltage from previous ISIs at the same phase
-                v_normal_list = []
-                for isi in diff_p[:-1]:
-                    time_idx = int((start_time - isi * dt + 6) / dt)
-                    v_normal_list.append(v_check[time_idx])
-                v_normal_avg = np.mean(v_normal_list)
+                v_normal = v_normal_list[time_idx]
                 # Voltage shift caused by perturbation
-                v_shift = v_epsp - v_normal_avg
-                # Compute iPRC approximation
-                baseline_isi = np.mean(diff_p[:-1])
-                iprc = (baseline_isi - diff_p[-1]) / baseline_isi / v_shift
-                v_shifts.append(v_shift)
+                v_shift = v_epsp - v_normal
+                # If normalization:
+                iprc = (baseline_isi - diff_p[1]) / baseline_isi / v_shift
+                # Without normalization:
+                # iprc = (baseline_isi - diff_p[1]) / baseline_isi
                 iprcs.append(iprc)
             except IndexError:
-                print('v_check',len(v_check))
-                print('index', int((start_time + 8) / dt))
+                print('error v_check',len(v_check))
+                print('error time', start_time)
                 iprc = 0
                 iprcs.append(0)
     else:
@@ -793,8 +806,9 @@ def run_cost_simulation(f_index, plotting=False):
 
         plt.figure()
         plt.plot(x_ticks, iprcs, 'k')
-        plt.ylim([-0.01, 0.1])
         # plt.savefig('sim_results/iPRC_Curve_full.svg')
+
+        print(f"FI Curve Frequency: {freq_sp_37}, {freq_fi3}, {freq_fi1}, {freq_fi2}, {freq_fi4}, {freq_fi5}")
 
         plt.show()
 
@@ -804,20 +818,9 @@ def run_cost_simulation(f_index, plotting=False):
 
 
 if __name__ == "__main__":
-    with open('MatingPool_final_sorted.pickle','rb') as p_file:
-        MatingPool = pickle.load(p_file)
-
-    pool_index = 9
-
-    f = MatingPool[0][pool_index]
-    index_score = MatingPool[1][pool_index]
-    print(f'Score Index Picked = {index_score:.2f}')
     
-    # index_min = MatingPool[1].index(min(MatingPool[1]))
-    # print('Score Min = {}'.format(MatingPool[1][index_min]))
-    # print('Index Min = {}'.format(index_min))
-
-    # print(f)
+    print("Running simulation...")
+    f = [0.0007963583921082318, 0.0003815687377937138, 0.00017182269948534667, 0.00013677576498594135, 0.006936784368008375, 5.608924038824625e-05, 1.549275293655228e-05, 0.00247408589348197, 3.6743855162058026e-05, 0.0037073499988764524, 0.0071491096168756485, 0.02549070306122303, 7.743454625597224e-05, 5.514386884897249e-06, 0.006689815782010555, 0.00486729247495532, 0.004064345732331276, 0.0021714819595217705, 0.0015691440785303712, 0.027371807023882866, 4.573554906528443e-05, 9.412104191142134e-06, 0.0005125438910908997, 0.0016634684288874269, 0.0015480939764529467, 0.4164751470088959, 0.5473505258560181, 6.742033958435059, 0.20042848587036133, 5.606938362121582, 3.7659823894500732]
 
     scores = run_cost_simulation(f, plotting=True)
-    print(f'simulation score: {scores[0]:.2f}')
+    print(f'Final score: {scores[0]:.2f}')
