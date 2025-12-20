@@ -1,3 +1,7 @@
+"""
+This code, adapted from Dr. Clayton Bingham, is acknowledged as an essential contribution to this work.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
@@ -37,7 +41,6 @@ class Evolve():
 	'MatingPool_enbo.pickle' - stores the current mating pool
 	'enbo.pickle' - stores all evaluated candidates throughout the process
 
-	This code, adapted from Dr. Clayton Bingham, is acknowledged as an essential contribution to this work.
 	'''
 	
 	def __init__(self,param_ranges = [],threshold_type='pool',score_threshold=100,generation_size=4,mating_pool_size=20,generation_limit=300,dynamic_mutation=True,mutation_rate=0,seed_generation=None):
