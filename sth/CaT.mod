@@ -29,7 +29,7 @@ INDEPENDENT {t FROM 0 TO 1 WITH 1 (ms)}
 NEURON {
 	SUFFIX CaT
 	USEION ca READ cai,cao,eca WRITE ica
-	RANGE gcaT, iCaT
+	RANGE gcaT, iCaT, gcatr
 	GLOBAL activate_Q10,Q10,gmaxQ10,rate_k,gmax_k,temp1,temp2,tempb
 	POINTER r_cat
 }
@@ -67,12 +67,14 @@ ASSIGNED {
 	rate_k
 	gmax_k
 	r_cat
+	gcatr
 }
 
 BREAKPOINT {
 	SOLVE states METHOD cnexp
 	ica  = (gcaT*gmax_k)*r*r*r*s*ghkg(v,cai,cao,2)
 	iCaT = ica
+	gcatr = (gcaT*gmax_k)*r*r*r*s
 }
 
 UNITSOFF

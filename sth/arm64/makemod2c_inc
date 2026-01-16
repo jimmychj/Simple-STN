@@ -1,6 +1,6 @@
 ./AXNODE75.c: ../AXNODE75.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "AXNODE75.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "AXNODE75.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./AXNODE75.o: ./AXNODE75.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -8,7 +8,7 @@
 
 ./Cacum.c: ../Cacum.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Cacum.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Cacum.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./Cacum.o: ./Cacum.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -16,7 +16,7 @@
 
 ./CaT.c: ../CaT.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "CaT.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "CaT.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./CaT.o: ./CaT.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -24,7 +24,7 @@
 
 ./HVA.c: ../HVA.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "HVA.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "HVA.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./HVA.o: ./HVA.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -32,7 +32,7 @@
 
 ./Ih.c: ../Ih.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Ih.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Ih.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./Ih.o: ./Ih.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -40,7 +40,7 @@
 
 ./KDR.c: ../KDR.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "KDR.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "KDR.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./KDR.o: ./KDR.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -48,7 +48,7 @@
 
 ./Kv31.c: ../Kv31.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Kv31.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Kv31.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./Kv31.o: ./Kv31.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -56,7 +56,7 @@
 
 ./myions.c: ../myions.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "myions.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "myions.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./myions.o: ./myions.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -64,7 +64,7 @@
 
 ./Na.c: ../Na.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Na.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "Na.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./Na.o: ./Na.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -72,7 +72,7 @@
 
 ./NaL.c: ../NaL.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "NaL.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "NaL.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./NaL.o: ./NaL.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -80,7 +80,7 @@
 
 ./PARAK75.c: ../PARAK75.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "PARAK75.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "PARAK75.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./PARAK75.o: ./PARAK75.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -88,7 +88,7 @@
 
 ./sKCa.c: ../sKCa.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "sKCa.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "sKCa.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./sKCa.o: ./sKCa.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -96,7 +96,7 @@
 
 ./STh.c: ../STh.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "STh.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "STh.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./STh.o: ./STh.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
@@ -104,7 +104,7 @@
 
 ./xtra.c: ../xtra.mod
 	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
-	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "xtra.mod" -o "/Users/jimmychen/Documents/PhD/cat/sth/arm64")
+	(cd "..";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "xtra.mod" -o "/Users/jimmychen/Projects/Simple-STN/sth/arm64")
 
 ./xtra.o: ./xtra.c
 	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"

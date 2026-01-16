@@ -456,6 +456,8 @@ def run_cost_simulation(f_index, plotting=False):
     stn_cell = create_updated_cell(f)
     soma_v = h.Vector().record(stn_cell.soma(0.5)._ref_v)
     soma_t = h.Vector().record(h._ref_t)
+    gcat_dend0 = h.Vector().record(stn_cell.dend0(0.5)._ref_gcatr_CaT)
+    gcat_dend1 = h.Vector().record(stn_cell.dend1(0.5)._ref_gcatr_CaT)
     h.celsius = 37
     h.finitialize()
     h.continuerun(1500 * ms)
@@ -465,6 +467,8 @@ def run_cost_simulation(f_index, plotting=False):
     v_0 = v[int(500/dt):]
     soma_v.clear()
     soma_t.clear()
+    gcat_dend0.clear()
+    gcat_dend1.clear()
     freq_sp_37 = get_freq_detect_burst(v_0, dt)
     score_sp = cal_score(freq_sp_37, [5, 20], 50, 'SP')
     v_min = min(v_0)
@@ -526,8 +530,12 @@ def run_cost_simulation(f_index, plotting=False):
     h.continuerun(2500 * ms)
     v_3 = soma_v.to_python()
     t_3 = soma_t.to_python()
+    gcatr_dend0 = gcat_dend0.to_python()
+    gcatr_dend1 = gcat_dend1.to_python()
     soma_v.clear()
     soma_t.clear()
+    gcat_dend0.clear()
+    gcat_dend1.clear()
     score_hp, v_HP, e_slp, v_half_hp, burst_hp, score_bp, burst_time, burst_count, max_int, min_int = cal_score_HP(v_3, 200, freq_sp_37, dt, v_peak, v_min)
     if math.isnan(score_hp):
         score_hp = 100
@@ -784,11 +792,19 @@ def run_cost_simulation(f_index, plotting=False):
 
 
         plt.figure()
+        plt.subplot(2, 1, 1)
         plt.plot(t_3, v_3, 'k')
         plt.xlabel('Time (ms)')
         plt.ylabel('Potential (mV)')
         plt.ylim([-85, 25])
-        # plt.savefig('sim_results/HP.svg')
+
+        plt.subplot(2, 1, 2)
+        plt.plot(t_3, gcatr_dend0, 'b', label='Proximal')
+        plt.plot(t_3, gcatr_dend1, 'r', label='Distal')
+        plt.xlabel('Time (ms)')
+        plt.ylabel('gCaT')
+        plt.legend()
+        plt.savefig('HP_cat.svg')
 
         plt.figure()
         I = [0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.25]

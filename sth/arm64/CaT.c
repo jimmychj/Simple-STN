@@ -41,7 +41,7 @@ extern double hoc_Exp(double);
 	/*SUPPRESS 762*/
 	/*SUPPRESS 763*/
 	/*SUPPRESS 765*/
-	 extern double *getarg();
+	 extern double *getarg(int);
  static double *_p; static Datum *_ppvar;
  
 #define t nrn_threads->_t
@@ -50,40 +50,42 @@ extern double hoc_Exp(double);
 #define gcaT_columnindex 0
 #define iCaT _p[1]
 #define iCaT_columnindex 1
-#define r _p[2]
-#define r_columnindex 2
-#define s _p[3]
-#define s_columnindex 3
-#define d _p[4]
-#define d_columnindex 4
-#define eca _p[5]
-#define eca_columnindex 5
-#define cai _p[6]
-#define cai_columnindex 6
-#define cao _p[7]
-#define cao_columnindex 7
-#define Dr _p[8]
-#define Dr_columnindex 8
-#define Ds _p[9]
-#define Ds_columnindex 9
-#define Dd _p[10]
-#define Dd_columnindex 10
-#define ica _p[11]
-#define ica_columnindex 11
-#define ralpha _p[12]
-#define ralpha_columnindex 12
-#define rbeta _p[13]
-#define rbeta_columnindex 13
-#define salpha _p[14]
-#define salpha_columnindex 14
-#define sbeta _p[15]
-#define sbeta_columnindex 15
-#define dalpha _p[16]
-#define dalpha_columnindex 16
-#define dbeta _p[17]
-#define dbeta_columnindex 17
-#define _g _p[18]
-#define _g_columnindex 18
+#define gcatr _p[2]
+#define gcatr_columnindex 2
+#define r _p[3]
+#define r_columnindex 3
+#define s _p[4]
+#define s_columnindex 4
+#define d _p[5]
+#define d_columnindex 5
+#define eca _p[6]
+#define eca_columnindex 6
+#define cai _p[7]
+#define cai_columnindex 7
+#define cao _p[8]
+#define cao_columnindex 8
+#define Dr _p[9]
+#define Dr_columnindex 9
+#define Ds _p[10]
+#define Ds_columnindex 10
+#define Dd _p[11]
+#define Dd_columnindex 11
+#define ica _p[12]
+#define ica_columnindex 12
+#define ralpha _p[13]
+#define ralpha_columnindex 13
+#define rbeta _p[14]
+#define rbeta_columnindex 14
+#define salpha _p[15]
+#define salpha_columnindex 15
+#define sbeta _p[16]
+#define sbeta_columnindex 16
+#define dalpha _p[17]
+#define dalpha_columnindex 17
+#define dbeta _p[18]
+#define dbeta_columnindex 18
+#define _g _p[19]
+#define _g_columnindex 19
 #define _ion_cai	*_ppvar[0]._pval
 #define _ion_cao	*_ppvar[1]._pval
 #define _ion_eca	*_ppvar[2]._pval
@@ -219,6 +221,7 @@ static void _ode_matsol(NrnThread*, _Memb_list*, int);
  "gcaT_CaT",
  "iCaT_CaT",
  0,
+ "gcatr_CaT",
  0,
  "r_CaT",
  "s_CaT",
@@ -233,12 +236,12 @@ extern Prop* need_memb(Symbol*);
 static void nrn_alloc(Prop* _prop) {
 	Prop *prop_ion;
 	double *_p; Datum *_ppvar;
- 	_p = nrn_prop_data_alloc(_mechtype, 19, _prop);
+ 	_p = nrn_prop_data_alloc(_mechtype, 20, _prop);
  	/*initialize range parameters*/
  	gcaT = 0.001;
  	iCaT = 0;
  	_prop->param = _p;
- 	_prop->param_size = 19;
+ 	_prop->param_size = 20;
  	_ppvar = nrn_prop_datum_alloc(_mechtype, 7, _prop);
  	_prop->dparam = _ppvar;
  	/*connect ionic variables to this model*/
@@ -277,7 +280,7 @@ extern void _cvode_abstol( Symbol**, double*, int);
   hoc_reg_nmodl_text(_mechtype, nmodl_file_text);
   hoc_reg_nmodl_filename(_mechtype, nmodl_filename);
 #endif
-  hoc_register_prop_size(_mechtype, 19, 7);
+  hoc_register_prop_size(_mechtype, 20, 7);
   hoc_register_dparam_semantics(_mechtype, 0, "ca_ion");
   hoc_register_dparam_semantics(_mechtype, 1, "ca_ion");
   hoc_register_dparam_semantics(_mechtype, 2, "ca_ion");
@@ -288,7 +291,7 @@ extern void _cvode_abstol( Symbol**, double*, int);
  	hoc_register_cvode(_mechtype, _ode_count, _ode_map, _ode_spec, _ode_matsol);
  	hoc_register_tolerance(_mechtype, _hoc_state_tol, &_atollist);
  	hoc_register_var(hoc_scdoub, hoc_vdoub, hoc_intfunc);
- 	ivoc_help("help ?1 CaT /Users/jimmychen/Documents/PhD/cat/sth/CaT.mod\n");
+ 	ivoc_help("help ?1 CaT /Users/jimmychen/Projects/Simple-STN/sth/CaT.mod\n");
  hoc_register_limits(_mechtype, _hoc_parm_limits);
  hoc_register_units(_mechtype, _hoc_parm_units);
  }
@@ -568,6 +571,7 @@ for (_iml = 0; _iml < _cntml; ++_iml) {
 static double _nrn_current(double _v){double _current=0.;v=_v;{ {
    ica = ( gcaT * gmax_k ) * r * r * r * s * ghkg ( _threadargscomma_ v , cai , cao , 2.0 ) ;
    iCaT = ica ;
+   gcatr = ( gcaT * gmax_k ) * r * r * r * s ;
    }
  _current += ica;
 
@@ -657,7 +661,7 @@ for (_iml = 0; _iml < _cntml; ++_iml) {
   cao = _ion_cao;
   eca = _ion_eca;
  { error =  states();
- if(error){fprintf(stderr,"at line 73 in file CaT.mod:\n	SOLVE states METHOD cnexp\n"); nrn_complain(_p); abort_run(error);}
+ if(error){fprintf(stderr,"at line 74 in file CaT.mod:\n	SOLVE states METHOD cnexp\n"); nrn_complain(_p); abort_run(error);}
  } }}
 
 }
@@ -680,7 +684,7 @@ _first = 0;
 }
 
 #if NMODL_TEXT
-static const char* nmodl_filename = "/Users/jimmychen/Documents/PhD/cat/sth/CaT.mod";
+static const char* nmodl_filename = "/Users/jimmychen/Projects/Simple-STN/sth/CaT.mod";
 static const char* nmodl_file_text = 
   "TITLE calcium T channel for STh\n"
   "\n"
@@ -713,7 +717,7 @@ static const char* nmodl_file_text =
   "NEURON {\n"
   "	SUFFIX CaT\n"
   "	USEION ca READ cai,cao,eca WRITE ica\n"
-  "	RANGE gcaT, iCaT\n"
+  "	RANGE gcaT, iCaT, gcatr\n"
   "	GLOBAL activate_Q10,Q10,gmaxQ10,rate_k,gmax_k,temp1,temp2,tempb\n"
   "	POINTER r_cat\n"
   "}\n"
@@ -751,12 +755,14 @@ static const char* nmodl_file_text =
   "	rate_k\n"
   "	gmax_k\n"
   "	r_cat\n"
+  "	gcatr\n"
   "}\n"
   "\n"
   "BREAKPOINT {\n"
   "	SOLVE states METHOD cnexp\n"
   "	ica  = (gcaT*gmax_k)*r*r*r*s*ghkg(v,cai,cao,2)\n"
   "	iCaT = ica\n"
+  "	gcatr = (gcaT*gmax_k)*r*r*r*s\n"
   "}\n"
   "\n"
   "UNITSOFF\n"
@@ -806,7 +812,7 @@ static const char* nmodl_file_text =
   "UNITSON\n"
   "\n"
   ":::INCLUDE \"ghk.inc\"\n"
-  ":::realpath /Users/jimmychen/Documents/PhD/cat/sth/ghk.inc\n"
+  ":::realpath /Users/jimmychen/Projects/Simple-STN/sth/ghk.inc\n"
   "\n"
   "\n"
   "FUNCTION ghkg(v(mV), ci(mM), co(mM), z) (mV) {\n"
